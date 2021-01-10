@@ -1,0 +1,8 @@
+消费端限流策略
+第一步，我们既然要使用消费端限流，我们需要关闭自动 ack，
+将 autoAck 设置为 false，channel.basicConsume(queueName, false, consumer);
+
+第二步，我们来设置具体的限流大小以及数量，channel.basicQos(0, 15, false);
+
+第三步，在消费者的 handleDelivery 消费方法中手动 ack，并且设置批量处理 ack 回应为 true，
+channel.basicAck(envelope.getDeliveryTag(), true);

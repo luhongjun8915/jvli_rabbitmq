@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration  scan="true" scanPeriod="10 seconds" debug="false">
+    <property name="LOG_HOME" value="/mnt/logs/media-service/" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <Key>tenantId</Key>
+            <DefaultValue>normal</DefaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${tenantId}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>${LOG_HOME}/tenantId_${HOSTNAME}_%d{yyyyMMdd}.log</fileNamePattern>
+                    <MaxHistory>30</MaxHistory>
+                </rollingPolicy>
+                <Append>false</Append>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                </layout>
+            </appender>
+        </sift>
+    </appender>
+
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/error_${HOSTNAME}_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/info_${HOSTNAME}_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>-->
+    </appender>
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/debug_${HOSTNAME}_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{360} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="INFOINT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/infoint_${HOSTNAME}_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] - %-5level - %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印INFO日志 -->
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <logger name="com.baiwang" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="ERROR" />
+        <appender-ref ref="INFO" />
+    </logger>
+    <logger name="org" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="ERROR" />
+        <appender-ref ref="INFO" />
+    </logger>
+
+<!--    <logger name="com.baiwang" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="DEBUG" />
+    </logger>-->
+
+    <logger name="org" additivity="false">
+        <level value="info" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="INFO" />
+    </logger>
+
+    <logger name="com.baiwang" additivity="false">
+        <level value="info" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="INFO" />
+    </logger>
+
+
+    <logger name="com.baiwang.media.basic.interceptor" additivity="false">
+        <level value="info" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="INFOINT" />
+        <appender-ref ref="INFO" />
+        <!--<appender-ref ref="DEBUG" />-->
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="INFO" />
+        <!--<appender-ref ref="DEBUG" />-->
+    </root>
+</configuration>
